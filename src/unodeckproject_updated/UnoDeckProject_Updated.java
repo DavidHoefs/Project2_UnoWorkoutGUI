@@ -7,6 +7,8 @@ package unodeckproject_updated;
 import Deck.Card;
 import Deck.Deck;
 import Deck.Hand;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,6 +24,10 @@ public class UnoDeckProject_Updated {
      */
     public static void main(String args[]) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        
+        System.out.println("Enter a file name/path for your output (include extension)");
+        String fName = reader.readLine();
+        createHTML(fName);
         
         //Get the number of decks to use
         int decks = 0;
@@ -70,14 +76,6 @@ public class UnoDeckProject_Updated {
 //            System.out.println("Color: " + currCard.color + " | Special: " + currCard.special + " | Number: " + currCard.number + " | No. " + Integer.toString(deckLength - i));
 //        }
         
-        // draw 7 cards for player hand
-        Card[] newHand = new Card[7];
-        for(int i =0;i<newHand.length;i++){
-            newHand[i] = mainDeck.drawCard();
-        }
-        // create hand
-        Hand stats = new Hand(newHand);
-        
         // get user input to assign workout to card color 
         System.out.println("Enter workout for Blue Card: ");
         String blueWork = reader.readLine();
@@ -88,28 +86,106 @@ public class UnoDeckProject_Updated {
         System.out.println("Enter workout for Yellow Card: ");
         String yellowWork = reader.readLine();
         
+        int bCount = 0, rCount = 0, gCount = 0, yCount = 0, burpCount = 0;
         
-        // sort hand, get color count,assign workout to color 
-        stats.sortHand(mainDeck);
-        
-        
-        
-       
-        // show the sorted player hand
-        System.out.println("PLAYER HAND: ");
-        for(int i = 0;i<stats.playerHand.length;i++){
-            System.out.println("Color: " + stats.playerHand[i].color.toUpperCase() + " Number: " + stats.playerHand[i].number + " Special: " + stats.playerHand[i].special.toUpperCase());
+        //create writer for HTML file
+        FileWriter writer = new FileWriter(fName);
+        writer.write("<!DOCTYPE html>\n<html>\n<body>\n");
+        int round = 1;
+        //main loop for emptying the deck
+        while(mainDeck.index > 0) {
+            //System.out.println("Round " + round);
+            writer.write("<p>Round " + round + "</p>\n");
             
+            // draw 7 cards for player hand
+            Card[] newHand;
+            if(mainDeck.index > 6)
+                newHand = new Card[7];
+            else
+                newHand = new Card[mainDeck.index];
+            for(int i =0;i<newHand.length;i++){
+                newHand[i] = mainDeck.drawCard();
+            }
+            // create hand
+            Hand stats = new Hand(newHand);
+            //System.out.println("PLAYER HAND BEFORE SORTING AND APPLYING ACTIONS: ");
+            writer.write("<p>PLAYER HAND BEFORE SORTING AND APPLYING ACTIONS:</p>\n");
+            for(int i = 0; i<stats.playerHand.length; i++){
+                if(stats.playerHand[i].number == 10){
+                    //System.out.println(stats.playerHand[i].color + " " + stats.playerHand[i].special);
+                    writer.write("<p style=\"color:" + stats.playerHand[i].color + ";\">" + stats.playerHand[i].color + " " + stats.playerHand[i].special + "</p>\n");
+                }
+                else{
+                    //System.out.println(stats.playerHand[i].color + " " + stats.playerHand[i].number);
+                    writer.write("<p style=\"color:" + stats.playerHand[i].color + ";\">" + stats.playerHand[i].color + " " + stats.playerHand[i].number + "</p>\n");
+                }
+            }
+            
+            // sort hand, get color count,assign workout to color 
+            stats.sortHand(mainDeck);
+            // show the sorted player hand
+            //System.out.println("\nPLAYER HAND AFTER SORTING AND APPLYING ACTIONS: ");
+            writer.write("\n<p>PLAYER HAND AFTER SORTING AND APPLYING ACTIONS:</p>\n");
+            for(int i = 0; i<stats.playerHand.length; i++){
+                if(stats.playerHand[i].number == 10){
+                    //System.out.println("Color: " + stats.playerHand[i].color.toUpperCase() + " Special: " + stats.playerHand[i].special.toUpperCase());
+                    writer.write("<p style=\"color:" + stats.playerHand[i].color + ";\">Color: " + stats.playerHand[i].color.toUpperCase() + " Special: " + stats.playerHand[i].special.toUpperCase() + "</p>\n");
+                }else{
+                    //System.out.println("Color: " + stats.playerHand[i].color.toUpperCase() + " Number: " + stats.playerHand[i].number);
+                    writer.write("<p style=\"color:" + stats.playerHand[i].color + ";\">Color: " + stats.playerHand[i].color.toUpperCase() + " Number: " + stats.playerHand[i].number + "</p>\n");
+                }
+            }
+            
+            //stats.reverseAction("blue",mainDeck);
+            String workout = stats.configureWorkout(blueWork, greenWork, redWork, yellowWork);
+            //System.out.println(workout);
+            writer.write("<p>" + workout + "</p>\n");
+            
+            bCount = bCount + stats.blueCount;
+            rCount = rCount + stats.redCount;
+            gCount = gCount + stats.greenCount;
+            yCount = yCount + stats.yellowCount;
+            burpCount = burpCount + stats.burpeeCount;
+            /*
+            System.out.println("TOTAL WORKOUT SO FAR:\n" + 
+                    blueWork + ": " + bCount + "\n" +
+                    redWork + ": " + rCount + "\n" +
+                    greenWork + ": " + gCount + "\n" +
+                    yellowWork + ": " + yCount + "\n" +
+                    "Burpees: " + burpCount);
+            */
+            writer.write("<p>TOTAL WORKOUT SO FAR:\n" + 
+                    blueWork + ": " + bCount + " | " +
+                    redWork + ": " + rCount + " | " +
+                    greenWork + ": " + gCount + " | " +
+                    yellowWork + ": " + yCount + " | " +
+                    "Burpees: " + burpCount + "</p>\n");
+            
+           // System.out.println("Cards Remaining in Deck: " + mainDeck.index);
+            writer.write("<p>Cards Remaining in Deck: " + mainDeck.index + "</p>\n");
+            //System.out.println("--------------------------------------------");
+            writer.write("<p>--------------------------------------------</p>\n");
+            round++;
         }
-        //stats.reverseAction("blue",mainDeck);
-        String workout = stats.configureWorkout(blueWork, greenWork, redWork, yellowWork);
-        System.out.println(workout);
-        System.out.println("Cards Remaining in Deck: ");
-        System.out.println();
+        writer.write("</body>\n</html>");
+        writer.close();
+    }
+    
+    public static void createHTML(String fname){
+        try{
+            File file = new File(fname);
+            if(file.createNewFile())
+                System.out.println("File created: " + file.getName());
+            else
+                System.out.println("A file with that name already exists, using that one instead.");
+        }catch(IOException e){
+            System.out.println("Error creating file");
+            e.printStackTrace();
+        }
     }
     
     public static Deck deckInitializer(Deck deck, String include_specials, int index) {
-        String[] colors = {"blue", "yellow", "red", "green", "none"};
+        String[] colors = {"blue", "yellow", "red", "green", "black"};
         String[] specials = {"Skip", "Draw 2", "Reverse", "Wild", "Wild Draw 4", "none"};
         int[] number = {0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
         //Hard coded to initialize deck

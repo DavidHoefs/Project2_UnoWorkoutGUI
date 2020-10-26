@@ -29,7 +29,6 @@ public class Hand {
     }
     
     // insertion sort for sorting hand
-    
     public  String sortHand(Deck mainDeck){
        boolean sameColor = false;
         for(int i = 0;i<playerHand.length - 1;i++){
@@ -42,15 +41,12 @@ public class Hand {
                 if(card.color != card2.color ){
                     swapCards(k,k-1);
                     sameColor = false;
-                    
-                    
                 }
                 else if(card.number < card2.number && sameColor){
                     swapCards(k,k-1);
                 }else{
                     break;
                 }
-                
             }
         }
         String cardsBeforeSort = getColorCount();
@@ -84,14 +80,12 @@ public class Hand {
                 index++;
                 actionCardCount++;
             }else if(playerHand[index].special == "Wild"){
-                burpeeCount++;
-                 index++;
+                burpeeCount += 4;
+                index++;
                 actionCardCount++;
-                
             }else{
                index++; 
             }
-            
         }
     }
     
@@ -105,7 +99,6 @@ public class Hand {
     
     // returns the card at the input index
     private  Card getNextCard(int index){
-        
         return this.playerHand[index];
     }
     
@@ -113,12 +106,12 @@ public class Hand {
         int [] indexArr = new int[6];
         int indexCounter = 0;
         for(int i = 0;i<playerHand.length;i++){
-            if(playerHand[i].color == color && playerHand[i].special != "reverse"){
-                deck.addCardBottom(playerHand[i]);
+            if(playerHand[i].special == "Reverse"){
                 indexArr[indexCounter] = i;
                 indexCounter++;
             }
-            if(playerHand[i].special == "reverse"){
+            else if(playerHand[i].color == color/* && playerHand[i].special != "Reverse"*/){
+                deck.addCardBottom(playerHand[i]);
                 indexArr[indexCounter] = i;
                 indexCounter++;
             }
@@ -175,15 +168,14 @@ public class Hand {
             yellowCount = 0;
         }
     }
+    
     // multiplies the total number of the specified colored card
     private void drawTwoAction(String color){
-       
             if(color == "blue"){
                 blueCount *= 2;
             }
             else if(color == "red"){
                 redCount *= 2;
-                
             }
             else if(color == "yellow"){
                 yellowCount *= 2;
@@ -191,9 +183,6 @@ public class Hand {
             else{
                 greenCount *=2;
             }
-            
-           
-        
     }
     
     private void wildAction4(){
@@ -201,20 +190,18 @@ public class Hand {
         greenCount *= 4;
         yellowCount *= 4;
         redCount *= 4;
-        burpeeCount++;
+        burpeeCount += 4;
     }
+    
     // returns the count of each color card
     public String getColorCount(){
         String output = "";
         for(int i = 0;i<playerHand.length;i++){
             if(playerHand[i].color.toString() == "blue" && playerHand[i].special == "none"){
-                blueCount += playerHand[i].number;
-                
-                
+                blueCount += playerHand[i].number;  
             }
             else if(playerHand[i].color.toString() == "green"&& playerHand[i].special == "none"){
                 greenCount+= playerHand[i].number;
-                
             }
             else if(playerHand[i].color.toString() == "red"&& playerHand[i].special == "none"){
                 redCount+= playerHand[i].number;
@@ -224,29 +211,17 @@ public class Hand {
             }else if(playerHand[i].special != "none"){
                 specialCount++;
             }
+            
             output += ("Card " + (i+1) + " :: " + playerHand[i].color +" ");
+            
             if(playerHand[i].special != "none"){
                 output += playerHand[i].special + "\n";
-                
             }else{
                output += playerHand[i].number + "\n";
-                
             }
-            
         }
         output += "\n";
-        return output;
-        
-         
-//        System.out.println("WORKOUT DETAILS: ");
-//        System.out.println("Blue Count: " + blueCount + " " + this.blueWorkout);
-//        System.out.println("Red Count: " + redCount+ " " + this.redWorkout);
-//        System.out.println("Green Count: " + greenCount+ " " + this.greenWorkout);
-//        System.out.println("Yellow Count: " + yellowCount+ " " + this.yellowWorkout);
-//        System.out.println("Special Count: " + specialCount);
-//        System.out.println("-------------------------------------------------------");
-//        
-            
+        return output;       
     }
     // assigns workout to colors
     public String configureWorkout(String blueWorkout,String greenWorkout,String redWorkout,String yellowWorkout){
@@ -255,17 +230,16 @@ public class Hand {
          this.greenWorkout = greenWorkout;
          this.redWorkout = redWorkout;
          this.yellowWorkout = yellowWorkout;
-         output += ("WORKOUT:\n");
-         output += (blueWorkout + " " + blueCount + "\n");
-         output +=(redWorkout + " " + redCount+ "\n");
-         output +=(yellowWorkout + " " + yellowCount+ "\n");
-         output += (greenWorkout + " " + greenCount+ "\n");
+         output += ("\nWORKOUT:\n");
+         output += (blueWorkout + ": " + blueCount + " | ");
+         output +=(redWorkout + ": " + redCount+ " | ");
+         output +=(yellowWorkout + ": " + yellowCount+ " | ");
+         output += (greenWorkout + ": " + greenCount+ " | ");
          for(int i = 0;i<playerHand.length;i++){
-             if(playerHand[i].special == "Wild" || playerHand[i].special == "Wild Draw 4"){
-                output += (burpeeCount * 4 + " BURPEES"+ "\n");
+            if(playerHand[i].special == "Wild" || playerHand[i].special == "Wild Draw 4"){
+                output += (" BURPEES:" + burpeeCount + "\n");
             }
-         }
-         
+        }
         return output;
     }
 }

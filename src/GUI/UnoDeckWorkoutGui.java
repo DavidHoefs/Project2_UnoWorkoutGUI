@@ -25,7 +25,6 @@ import Deck.Hand;
 import static java.lang.Integer.parseInt;
 import static javafx.application.Application.launch;
 import javafx.event.Event;
-import static unodeckproject_updated.UnoDeckProject_Updated.shuffleTogether;
 /**
  *
  * @author hoefs
@@ -34,6 +33,7 @@ public class UnoDeckWorkoutGui extends Application {
     
     private TextField tfNumberOfDecks = new TextField();
     private TextField tfIncludeActionCards = new TextField();
+    private TextField tfShuffleCards = new TextField();
     private TextField tfBlueWorkout = new TextField();
     private TextField tfRedWorkout = new TextField();
     private TextField tfGreenWorkout = new TextField();
@@ -46,21 +46,23 @@ public class UnoDeckWorkoutGui extends Application {
         GridPane grid = new GridPane();
         grid.setHgap(5);
         grid.setVgap(5);
-        grid.add(new Label("How many decks would you like to use? "), 0, 0);
+        grid.add(new Label("How many decks would you like to use? [1-3]"), 0, 0);
         grid.add(tfNumberOfDecks, 1, 0);
-        grid.add(new Label("Action Cards? "), 0, 1);
+        grid.add(new Label("Action Cards?[Y/N] "), 0, 1);
         grid.add(tfIncludeActionCards, 1, 1);
-        grid.add(new Label("Blue Workout: "), 0, 2);
-        grid.add(tfBlueWorkout, 1, 2);
-        grid.add(new Label("Red Workout: "), 0, 3);
-        grid.add(tfRedWorkout, 1, 3);
-        grid.add(new Label("Green Workout: "), 0, 4);
-        grid.add(tfGreenWorkout, 1, 4);
-        grid.add(new Label("Yellow Workout: "), 0, 5);
-        grid.add(tfYellowWorkout, 1, 5);
-        grid.add(btnCreateWorkout, 1, 6);
-        grid.add(btnNextRound,2,6);
-        grid.add(tfWorkoutOutput,1,8);
+        grid.add(new Label("Shuffle Cards Together? [Y/N]"), 0, 2);
+        grid.add(tfShuffleCards, 1, 2);
+        grid.add(new Label("Blue Workout: "), 0, 3);
+        grid.add(tfBlueWorkout, 1, 3);
+        grid.add(new Label("Red Workout: "), 0, 4);
+        grid.add(tfRedWorkout, 1, 4);
+        grid.add(new Label("Green Workout: "), 0, 5);
+        grid.add(tfGreenWorkout, 1, 5);
+        grid.add(new Label("Yellow Workout: "), 0, 6);
+        grid.add(tfYellowWorkout, 1, 6);
+        grid.add(btnCreateWorkout, 1, 7);
+        grid.add(btnNextRound,2,7);
+        grid.add(tfWorkoutOutput,1,9);
         
         // UI Properties
         grid.setAlignment(Pos.CENTER);
@@ -95,18 +97,24 @@ public class UnoDeckWorkoutGui extends Application {
         String yellowWorkout = tfYellowWorkout.getText();
         if(firstRound){
             
-        
-        String numDecks = tfNumberOfDecks.getText();
-        
-        String includeActionCards = tfIncludeActionCards.getText();
-        
-        // choose whether or not to shuffle action cards
-        if(includeActionCards != "y" ){
-            mainDeck = shuffleTogether(parseInt(numDecks), 32, "y");
-        }else{
-            mainDeck = shuffleTogether(parseInt(numDecks),0,"y");
+            String numDecks = tfNumberOfDecks.getText();
+            String includeActionCards = tfIncludeActionCards.getText();
+            
+            int specials;
+            if("y".equals(includeActionCards))
+                specials = 32;
+            else
+                specials = 0;
+            
+            String together = tfShuffleCards.getText();
+            
+            // choose whether or not to shuffle action cards
+            if(together == "y"){
+                mainDeck = shuffleTogether(parseInt(numDecks), specials, includeActionCards);
+            }else{
+                mainDeck = shuffleSeparate(parseInt(numDecks), specials, includeActionCards);
+            }
         }
-        } 
         
         else{
             mainDeck = fullDeck;
@@ -120,7 +128,11 @@ public class UnoDeckWorkoutGui extends Application {
         //mainDeck = shuffleTogether(parseInt(numDecks), 1, "y");
        
         // create a player hand and draw 7 cards
-        Card[] newHand = new Card[7];
+        Card[] newHand;
+        if(mainDeck.index > 6)
+            newHand = new Card[7];
+        else
+            newHand = new Card[mainDeck.index];
         for(int i =0;i<newHand.length;i++){
             newHand[i] = mainDeck.drawCard();
         }
@@ -193,6 +205,22 @@ public class UnoDeckWorkoutGui extends Application {
         }
         deck.shuffleDeck();
         return deck;
+    }
+    
+    public static Deck shuffleSeparate(int decks, int specials, String include_specials) {
+        Deck bigDeck = new Deck(decks, specials);
+        for(int i = 0; i < decks; i++) {
+            Deck smolDeck = new Deck(1, specials);
+            smolDeck = deckInitializer(smolDeck, include_specials, 0);//create mini deck
+            smolDeck.shuffleDeck();//shuffle it
+            
+            int index = smolDeck.maxCards;
+            for (int j = 0; j < index; j++) {
+                Card card = smolDeck.drawCard();
+                bigDeck.addCard(card.color, card.special, card.number);//add mini deck to big deck
+            }
+        }
+        return bigDeck;
     }
     
     /**

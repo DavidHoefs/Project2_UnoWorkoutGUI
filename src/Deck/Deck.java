@@ -12,7 +12,7 @@ import java.util.Random;
  */
 public class Deck {
     private Card[] deck;
-    private int index;
+    public int index;
     final public int maxCards;
     
     public Deck(int decks, int specials) {
