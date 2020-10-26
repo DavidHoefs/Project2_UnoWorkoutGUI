@@ -48,6 +48,7 @@ public class Hand {
         if(specialCount > 0){
             findActionCards(mainDeck);
         }
+        // sort by color
         int n = playerHand.length;
         for(int i = 0;i< n-1;i++){
             for(int j = 0;j<n-i-1;j++){
@@ -58,7 +59,7 @@ public class Hand {
                 }
             }
         }
-        
+        // sort by number by color
         for(int i = 0;i< n-1;i++){
             for(int j = 0;j<n-i-1;j++){
                 if(colorToInt(playerHand[j].color) == colorToInt(playerHand[j+1].color) && playerHand[j].number > playerHand[j+1].number){
@@ -70,37 +71,7 @@ public class Hand {
         }
         return cardsBeforeSort;
     }
-    // insertion sort for sorting hand
-//    public String sortHand(Deck mainDeck){
-//        String cardsBeforeSort = getColorCount();
-//        if(specialCount > 0){
-//            findActionCards(mainDeck);
-//        }
-//       boolean sameColor = false;
-//        for(int i = 0;i<playerHand.length - 1;i++){
-//            for(int k = i+1;k>0;k--){
-//                final Card card = getNextCard(k);
-//                final Card card2 = getNextCard(k - 1);
-//                if(card.color == card2.color){
-//                    sameColor = true;
-//                }
-//                 if(card.color != card2.color ){
-//                    swapCards(k,k-1);
-//                    sameColor = false;
-//                }
-//                if(card.number < card2.number && sameColor){
-//                    swapCards(k,k-1);
-//                    sameColor = false;
-//                }else{
-//                    break;
-//                }
-//            }
-//        }
-//        
-//        
-//        
-//        return cardsBeforeSort;
-//    }
+    
     
     private void findActionCards(Deck deck){
         int actionCardCount = 0;
