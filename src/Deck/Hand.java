@@ -28,33 +28,79 @@ public class Hand {
         this.playerHand = inputHand;
     }
     
-    // insertion sort for sorting hand
-    public  String sortHand(Deck mainDeck){
-       boolean sameColor = false;
-        for(int i = 0;i<playerHand.length - 1;i++){
-            for(int k = i+1;k>0;k--){
-                final Card card = getNextCard(k);
-                final Card card2 = getNextCard(k - 1);
-                if(card.color == card2.color){
-                    sameColor = true;
-                }
-                if(card.color != card2.color ){
-                    swapCards(k,k-1);
-                    sameColor = false;
-                }
-                else if(card.number < card2.number && sameColor){
-                    swapCards(k,k-1);
-                }else{
-                    break;
-                }
-            }
+    public int colorToInt(String color){
+        int output = 0;
+        if(color == "red"){
+            return 1;
+        }else if(color == "blue"){
+            return 2;
+        }else if(color == "green"){
+            return 3;
+        }else if(color == "yellow"){
+            return 4;
+        }else{
+            return 5;
         }
-        String cardsBeforeSort = getColorCount();
+    }
+    // bubble sort color
+    public String sortHand(Deck mainDeck){
+         String cardsBeforeSort = getColorCount();
         if(specialCount > 0){
             findActionCards(mainDeck);
         }
+        int n = playerHand.length;
+        for(int i = 0;i< n-1;i++){
+            for(int j = 0;j<n-i-1;j++){
+                if(colorToInt(playerHand[j].color) > colorToInt(playerHand[j+1].color)){
+                    Card temp = playerHand[j];
+                    playerHand[j] = playerHand[j+1];
+                    playerHand[j+1] = temp;
+                }
+            }
+        }
+        
+        for(int i = 0;i< n-1;i++){
+            for(int j = 0;j<n-i-1;j++){
+                if(colorToInt(playerHand[j].color) == colorToInt(playerHand[j+1].color) && playerHand[j].number > playerHand[j+1].number){
+                    Card temp = playerHand[j];
+                    playerHand[j] = playerHand[j+1];
+                    playerHand[j+1] = temp;
+                }
+            }
+        }
         return cardsBeforeSort;
     }
+    // insertion sort for sorting hand
+//    public String sortHand(Deck mainDeck){
+//        String cardsBeforeSort = getColorCount();
+//        if(specialCount > 0){
+//            findActionCards(mainDeck);
+//        }
+//       boolean sameColor = false;
+//        for(int i = 0;i<playerHand.length - 1;i++){
+//            for(int k = i+1;k>0;k--){
+//                final Card card = getNextCard(k);
+//                final Card card2 = getNextCard(k - 1);
+//                if(card.color == card2.color){
+//                    sameColor = true;
+//                }
+//                 if(card.color != card2.color ){
+//                    swapCards(k,k-1);
+//                    sameColor = false;
+//                }
+//                if(card.number < card2.number && sameColor){
+//                    swapCards(k,k-1);
+//                    sameColor = false;
+//                }else{
+//                    break;
+//                }
+//            }
+//        }
+//        
+//        
+//        
+//        return cardsBeforeSort;
+//    }
     
     private void findActionCards(Deck deck){
         int actionCardCount = 0;
@@ -87,6 +133,7 @@ public class Hand {
                index++; 
             }
         }
+        
     }
     
     // swap method for insertion sort
@@ -180,7 +227,7 @@ public class Hand {
             else if(color == "yellow"){
                 yellowCount *= 2;
             }
-            else{
+            else if(color == "green"){
                 greenCount *=2;
             }
     }
