@@ -175,9 +175,11 @@ public class UnoDeckProject_Updated {
         try{
             File file = new File(fname);
             if(file.createNewFile())
-                System.out.println("File created: " + file.getName());
-            else
+                System.out.println("File created: " + file.getAbsolutePath());
+            else{
                 System.out.println("A file with that name already exists, using that one instead.");
+                System.out.println("File path: " + file.getAbsolutePath());
+            }
         }catch(IOException e){
             System.out.println("Error creating file");
             e.printStackTrace();

@@ -253,11 +253,13 @@ public class Hand {
          output +=(redWorkout + ": " + redCount+ " | ");
          output +=(yellowWorkout + ": " + yellowCount+ " | ");
          output += (greenWorkout + ": " + greenCount+ " | ");
+         output += (" BURPEES:" + burpeeCount + "\n");
+         /*
          for(int i = 0;i<playerHand.length;i++){
             if(playerHand[i].special == "Wild" || playerHand[i].special == "Wild Draw 4"){
                 output += (" BURPEES:" + burpeeCount + "\n");
             }
-        }
+        }*/
         return output;
     }
 }

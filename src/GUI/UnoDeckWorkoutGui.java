@@ -100,7 +100,7 @@ public class UnoDeckWorkoutGui extends Application {
             String numDecks = tfNumberOfDecks.getText();
             String includeActionCards = tfIncludeActionCards.getText();
             
-            int specials;
+            int specials = 32;
             if("y".equals(includeActionCards))
                 specials = 32;
             else
