@@ -18,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.geometry.Pos;
 import javafx.geometry.HPos;
 import javafx.scene.control.Label;
+
 import javafx.stage.Stage;
 import Deck.Deck;
 import Deck.Hand;
@@ -26,7 +27,7 @@ import static javafx.application.Application.launch;
 import javafx.event.Event;
 /**
  *
- * @author David Hoefs
+ * @author hoefs
  */
 public class UnoDeckWorkoutGui extends Application {
     
@@ -40,6 +41,8 @@ public class UnoDeckWorkoutGui extends Application {
     private Button btnCreateWorkout = new Button();
     private TextArea tfWorkoutOutput = new TextArea();
     private Button btnNextRound = new Button();
+    
+    private int bSkip = 0, rSkip = 0, gSkip = 0, ySkip = 0;
     @Override
     public void start(Stage primaryStage) {
         GridPane grid = new GridPane();
@@ -67,12 +70,14 @@ public class UnoDeckWorkoutGui extends Application {
         grid.setAlignment(Pos.CENTER);
         btnCreateWorkout.setText("Create Workout");
         btnCreateWorkout.setOnAction( e -> createWorkout(true));
-        btnNextRound.setAlignment(Pos.BOTTOM_LEFT);        
+        
+        btnNextRound.setAlignment(Pos.BOTTOM_LEFT);
+        
         btnNextRound.setText("Next Round");
         btnNextRound.setOnAction(e -> nextRound());
         
 
-        // setup scene
+        
         Scene scene = new Scene(grid, 300, 250);
         
         primaryStage.setTitle("Uno Workout");
@@ -93,6 +98,10 @@ public class UnoDeckWorkoutGui extends Application {
         String greenWorkout = tfGreenWorkout.getText();
         String yellowWorkout = tfYellowWorkout.getText();
         if(firstRound){
+            this.bSkip = 0;
+            this.rSkip = 0;
+            this.gSkip = 0;
+            this.ySkip = 0;
             
             String numDecks = tfNumberOfDecks.getText();
             String includeActionCards = tfIncludeActionCards.getText();
@@ -138,7 +147,7 @@ public class UnoDeckWorkoutGui extends Application {
         // create hand
         Hand playerHand = new Hand(newHand);
         // String returned from sortHand() method describes the players cards
-        String cardsBeforeSort = "SORTED HAND:\n" + playerHand.sortHand(mainDeck);
+        String cardsBeforeSort = "PLAYER HAND:\n" + playerHand.sortHand(mainDeck);
         
         
         
@@ -150,24 +159,28 @@ public class UnoDeckWorkoutGui extends Application {
         outputString +=("PLAYER HAND AFTER ACTION CARDS: \n");
         for(int i = 0;i<playerHand.playerHand.length;i++){
             outputString += "Color: " + playerHand.playerHand[i].color.toUpperCase() + " Number: " + playerHand.playerHand[i].number + " Special: " + playerHand.playerHand[i].special.toUpperCase() + "\n";
-            
-        }
+        } 
+        
+        this.bSkip = bSkip + playerHand.blueSkip;
+        this.rSkip = rSkip + playerHand.redSkip;
+        this.gSkip = gSkip + playerHand.greenSkip;
+        this.ySkip = ySkip + playerHand.yellowSkip;
+        
+        String totalSkip = ("\nTOTAL WORKOUT SKIPPED SO FAR\n" + 
+                blueWorkout + ": " + bSkip + " | " +
+                redWorkout + ": " + rSkip + " | " +
+                greenWorkout + ": " + gSkip + " | " +
+                yellowWorkout + ": " + ySkip + "\n");
+        
         // print the output to the TextArea
         
         fullDeck = mainDeck;
         int remainingCards = fullDeck.getCardCount();
-        tfWorkoutOutput.setText(cardsBeforeSort + outputString + "\n" + workoutConfigured + "\nCards Remaining: " + remainingCards);
+        tfWorkoutOutput.setText(cardsBeforeSort + outputString + "\n" + workoutConfigured + "\nCards Remaining: " + remainingCards + totalSkip);
         
     }
     
-    /**
-     *
-     * @param deck
-     * @param include_specials
-     * @param index
-     * @return
-     */
-    public static Deck deckInitializer(Deck deck, String include_specials, int index) {
+      public static Deck deckInitializer(Deck deck, String include_specials, int index) {
         String[] colors = {"blue", "yellow", "red", "green", "none"};
         String[] specials = {"Skip", "Draw 2", "Reverse", "Wild", "Wild Draw 4", "none"};
         int[] number = {0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
@@ -201,13 +214,6 @@ public class UnoDeckWorkoutGui extends Application {
         return deck;
     }
     
-    /**
-     *
-     * @param decks
-     * @param specials
-     * @param include_specials
-     * @return
-     */
     public static Deck shuffleTogether(int decks, int specials, String include_specials) {
         Deck deck = new Deck(decks, specials);
         for(int i = 0; i < decks; i++){
@@ -218,13 +224,6 @@ public class UnoDeckWorkoutGui extends Application {
         return deck;
     }
     
-    /**
-     *
-     * @param decks
-     * @param specials
-     * @param include_specials
-     * @return
-     */
     public static Deck shuffleSeparate(int decks, int specials, String include_specials) {
         Deck bigDeck = new Deck(decks, specials);
         for(int i = 0; i < decks; i++) {

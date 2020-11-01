@@ -54,6 +54,27 @@ public class Hand {
      * This represents the count of BURPEES added to the workout
      */
     burpeeCount = 0;
+    
+    /**
+     * This represents the count of BLUE cards that got skipped
+     */
+    public int blueSkip = 0,
+
+    /**
+     * This represents the count of RED cards skipped
+     */
+    redSkip = 0,
+
+    /**
+     * This represents the count of YELLOW cards skipped
+     */
+    yellowSkip = 0,
+
+    /**
+     * This represents the count of GREEN cards skipped
+     */
+    greenSkip = 0;
+            
     // String to assign workout to color
 
     /**
@@ -289,6 +310,15 @@ public class Hand {
         // find cards that are same color as skip card
         for(int i = 0;i<playerHand.length;i++){
             if(playerHand[i].color == color){
+                if("blue".equals(color) && playerHand[i].number != 10)
+                    this.blueSkip = blueSkip + playerHand[i].number;
+                else if("red".equals(color) && playerHand[i].number != 10)
+                    this.redSkip = redSkip + playerHand[i].number;
+                else if("yellow".equals(color) && playerHand[i].number != 10)
+                    this.yellowSkip = yellowSkip + playerHand[i].number;
+                else if("green".equals(color) && playerHand[i].number != 10)
+                    this.greenSkip = greenSkip + playerHand[i].number;
+                
                 indexArr[indexCounter] = i;
                 indexCounter++;
             }

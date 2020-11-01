@@ -97,6 +97,7 @@ public class UnoDeckProject_Updated {
         String yellowWork = reader.readLine();
         
         int bCount = 0, rCount = 0, gCount = 0, yCount = 0, burpCount = 0;
+        int bSkip = 0, rSkip = 0, gSkip = 0, ySkip = 0;
         
         //create writer for HTML file
         FileWriter writer = new FileWriter(fName);
@@ -170,6 +171,24 @@ public class UnoDeckProject_Updated {
                     greenWork + ": " + gCount + " | " +
                     yellowWork + ": " + yCount + " | " +
                     "Burpees: " + burpCount + "</p>\n");
+            
+            bSkip = bSkip + stats.blueSkip;
+            rSkip = rSkip + stats.redSkip;
+            gSkip = gSkip + stats.greenSkip;
+            ySkip = ySkip + stats.yellowSkip;
+            /*
+            System.out.println("TOTAL WORKOUT SKIPPED SO FAR:\n" + 
+                    blueWork + ": " + bSkip + "\n" +
+                    redWork + ": " + rSkip + "\n" +
+                    greenWork + ": " + gSkip + "\n" +
+                    yellowWork + ": " + ySkip + "\n" +
+                    "Burpees: " + burpCount);
+            */
+            writer.write("<p>TOTAL WORKOUT SKIPPED SO FAR:\n" + 
+                    blueWork + ": " + bSkip + " | " +
+                    redWork + ": " + rSkip + " | " +
+                    greenWork + ": " + gSkip + " | " +
+                    yellowWork + ": " + ySkip + "</p>\n");
             
            // System.out.println("Cards Remaining in Deck: " + mainDeck.index);
             writer.write("<p>Cards Remaining in Deck: " + mainDeck.index + "</p>\n");
