@@ -1,9 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package unodeckproject_updated;
+
+/*
+ * Project Name: CS2365 Project 2 - UNO Deck Workout
+ * October 2020
+ * Description: This project creates a deck comprised of UNO cards and displays
+ *              it in sets 7-card hands that get dealt one at a time until the
+ *              deck is empty. The user is allowed to decide how many decks
+ *              (between 1 and 3)are used, if the special cards should be
+ *              allowed or not, and it each deck should be shuffled separate or
+ *              together. Once the deck has been created and shuffled, hands of
+ *              7 cards are draw. They are then organized by color and number,
+ *              and the action cards are applied. After all this, the contents
+ *              of the hand and the number of reps per workout are saved to an
+ *              HTML file. This process is repeated until the deck is empty.
+ *              Once the deck is empty, the total reps per workout are saved to
+ *              the file.
+ */
+//package unodeckproject_updated;
 import Deck.Card;
 import Deck.Deck;
 import Deck.Hand;
@@ -15,12 +28,17 @@ import java.io.InputStreamReader;
 
 /**
  *
- * @author hoefs
+ * @author David Hoefs
+ * @author Javier Vasquez
  */
 public class UnoDeckProject_Updated {
 
     /**
+     * Main method gets user input, creates and shuffles deck, and creates the
+     * HTML file.
+     * 
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
     public static void main(String args[]) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -67,14 +85,6 @@ public class UnoDeckProject_Updated {
             mainDeck = shuffleTogether(decks, specials, include_specials);
         else
             mainDeck = shuffleSeparate(decks, specials, include_specials);
-        
-        
-        //shows and empties deck
-//        int deckLength = mainDeck.maxCards;
-//        for (int i = 0; i < deckLength; i++){
-//            Card currCard = mainDeck.drawCard(); //save the top card and pop it
-//            System.out.println("Color: " + currCard.color + " | Special: " + currCard.special + " | Number: " + currCard.number + " | No. " + Integer.toString(deckLength - i));
-//        }
         
         // get user input to assign workout to card color 
         System.out.println("Enter workout for Blue Card: ");
@@ -127,10 +137,10 @@ public class UnoDeckProject_Updated {
             //System.out.println("\nPLAYER HAND AFTER SORTING AND APPLYING ACTIONS: ");
             writer.write("\n<p>PLAYER HAND AFTER SORTING AND APPLYING ACTIONS:</p>\n");
             for(int i = 0; i<stats.playerHand.length; i++){
-                if(stats.playerHand[i].number == 10){
+                if(stats.playerHand[i] != null && stats.playerHand[i].number == 10 ){
                     //System.out.println("Color: " + stats.playerHand[i].color.toUpperCase() + " Special: " + stats.playerHand[i].special.toUpperCase());
                     writer.write("<p style=\"color:" + stats.playerHand[i].color + ";\">Color: " + stats.playerHand[i].color.toUpperCase() + " Special: " + stats.playerHand[i].special.toUpperCase() + "</p>\n");
-                }else{
+                }else if(stats.playerHand[i] != null){
                     //System.out.println("Color: " + stats.playerHand[i].color.toUpperCase() + " Number: " + stats.playerHand[i].number);
                     writer.write("<p style=\"color:" + stats.playerHand[i].color + ";\">Color: " + stats.playerHand[i].color.toUpperCase() + " Number: " + stats.playerHand[i].number + "</p>\n");
                 }
@@ -171,6 +181,11 @@ public class UnoDeckProject_Updated {
         writer.close();
     }
     
+    /**
+     * Public method creates an HTML file.
+     * 
+     * @param fname file name/path for the HTML file.
+     */
     public static void createHTML(String fname){
         try{
             File file = new File(fname);
@@ -186,6 +201,17 @@ public class UnoDeckProject_Updated {
         }
     }
     
+    /**
+     * Public method that initializes a deck by adding cards in order of color
+     * and number.
+     * 
+     * @param deck the deck to be created
+     * @param include_specials used as a condition to include or not include
+     *                         action cards
+     * @param index used to keep track of which deck is being initialized if
+     *              there is more than one deck
+     * @return the deck after being filled with cards
+     */
     public static Deck deckInitializer(Deck deck, String include_specials, int index) {
         String[] colors = {"blue", "yellow", "red", "green", "black"};
         String[] specials = {"Skip", "Draw 2", "Reverse", "Wild", "Wild Draw 4", "none"};
@@ -220,6 +246,16 @@ public class UnoDeckProject_Updated {
         return deck;
     }
     
+    /**
+     * Public method initializes one or more decks under a single variable name
+     * before calling the shuffle method from the deck class.
+     * 
+     * @param decks the number of deck to be shuffled
+     * @param specials the the amount of action cards to be used in the deck
+     * @param include_specials the condition that tells the program if the user
+     *                         elected to use action cards
+     * @return the populated deck
+     */
     public static Deck shuffleTogether(int decks, int specials, String include_specials) {
         Deck deck = new Deck(decks, specials);
         for(int i = 0; i < decks; i++){
@@ -230,6 +266,16 @@ public class UnoDeckProject_Updated {
         return deck;
     }
     
+    /**
+     * Public method that initializes multiple decks and shuffles 
+     * them separately before adding them to a single, main deck.
+     * 
+     * @param decks the number of deck to be shuffled
+     * @param specials the the amount of action cards to be used in the deck
+     * @param include_specials the condition that tells the program if the user
+     *                         elected to use action cards
+     * @return the populated deck
+     */
     public static Deck shuffleSeparate(int decks, int specials, String include_specials) {
         Deck bigDeck = new Deck(decks, specials);
         for(int i = 0; i < decks; i++) {
