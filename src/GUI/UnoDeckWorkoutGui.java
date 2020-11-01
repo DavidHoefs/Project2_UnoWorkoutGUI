@@ -18,7 +18,6 @@ import javafx.scene.layout.GridPane;
 import javafx.geometry.Pos;
 import javafx.geometry.HPos;
 import javafx.scene.control.Label;
-
 import javafx.stage.Stage;
 import Deck.Deck;
 import Deck.Hand;
@@ -27,7 +26,7 @@ import static javafx.application.Application.launch;
 import javafx.event.Event;
 /**
  *
- * @author hoefs
+ * @author David Hoefs
  */
 public class UnoDeckWorkoutGui extends Application {
     
@@ -68,14 +67,12 @@ public class UnoDeckWorkoutGui extends Application {
         grid.setAlignment(Pos.CENTER);
         btnCreateWorkout.setText("Create Workout");
         btnCreateWorkout.setOnAction( e -> createWorkout(true));
-        
-        btnNextRound.setAlignment(Pos.BOTTOM_LEFT);
-        
+        btnNextRound.setAlignment(Pos.BOTTOM_LEFT);        
         btnNextRound.setText("Next Round");
         btnNextRound.setOnAction(e -> nextRound());
         
 
-        
+        // setup scene
         Scene scene = new Scene(grid, 300, 250);
         
         primaryStage.setTitle("Uno Workout");
@@ -163,7 +160,14 @@ public class UnoDeckWorkoutGui extends Application {
         
     }
     
-      public static Deck deckInitializer(Deck deck, String include_specials, int index) {
+    /**
+     *
+     * @param deck
+     * @param include_specials
+     * @param index
+     * @return
+     */
+    public static Deck deckInitializer(Deck deck, String include_specials, int index) {
         String[] colors = {"blue", "yellow", "red", "green", "none"};
         String[] specials = {"Skip", "Draw 2", "Reverse", "Wild", "Wild Draw 4", "none"};
         int[] number = {0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10};
@@ -197,6 +201,13 @@ public class UnoDeckWorkoutGui extends Application {
         return deck;
     }
     
+    /**
+     *
+     * @param decks
+     * @param specials
+     * @param include_specials
+     * @return
+     */
     public static Deck shuffleTogether(int decks, int specials, String include_specials) {
         Deck deck = new Deck(decks, specials);
         for(int i = 0; i < decks; i++){
@@ -207,6 +218,13 @@ public class UnoDeckWorkoutGui extends Application {
         return deck;
     }
     
+    /**
+     *
+     * @param decks
+     * @param specials
+     * @param include_specials
+     * @return
+     */
     public static Deck shuffleSeparate(int decks, int specials, String include_specials) {
         Deck bigDeck = new Deck(decks, specials);
         for(int i = 0; i < decks; i++) {

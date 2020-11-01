@@ -4,7 +4,7 @@
  * This class functions like a stack but with the added bonus of being able to
  * insert one card at a time from the bottom as well as the top.
  */
-package Deck;
+//package Deck;
 import java.util.Random;
 
 /**

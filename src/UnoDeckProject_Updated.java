@@ -14,7 +14,7 @@
  *              Once the deck is empty, the total reps per workout are saved to
  *              the file.
  */
-package unodeckproject_updated;
+//package unodeckproject_updated;
 import Deck.Card;
 import Deck.Deck;
 import Deck.Hand;
@@ -135,10 +135,10 @@ public class UnoDeckProject_Updated {
             //System.out.println("\nPLAYER HAND AFTER SORTING AND APPLYING ACTIONS: ");
             writer.write("\n<p>PLAYER HAND AFTER SORTING AND APPLYING ACTIONS:</p>\n");
             for(int i = 0; i<stats.playerHand.length; i++){
-                if(stats.playerHand[i].number == 10){
+                if(stats.playerHand[i] != null && stats.playerHand[i].number == 10 ){
                     //System.out.println("Color: " + stats.playerHand[i].color.toUpperCase() + " Special: " + stats.playerHand[i].special.toUpperCase());
                     writer.write("<p style=\"color:" + stats.playerHand[i].color + ";\">Color: " + stats.playerHand[i].color.toUpperCase() + " Special: " + stats.playerHand[i].special.toUpperCase() + "</p>\n");
-                }else{
+                }else if(stats.playerHand[i] != null){
                     //System.out.println("Color: " + stats.playerHand[i].color.toUpperCase() + " Number: " + stats.playerHand[i].number);
                     writer.write("<p style=\"color:" + stats.playerHand[i].color + ";\">Color: " + stats.playerHand[i].color.toUpperCase() + " Number: " + stats.playerHand[i].number + "</p>\n");
                 }
